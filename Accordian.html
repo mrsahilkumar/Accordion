@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title> Accordion</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #1af1f1;
+      }
+  
+      .accordion {
+        width: 90%;
+        max-width: 600px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+  
+      .accordion-item {
+        border-bottom: 1px solid #ddd;
+        overflow: hidden;
+      }
+  
+      .accordion-header {
+        background-color: #f8f8f8;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out;
+      }
+  
+      .accordion-header:hover {
+        background-color: #eaeaea;
+      }
+  
+      .title-input {
+        flex: 1;
+        margin-right: 10px;
+        border: none;
+        padding: 8px;
+        font-size: 16px;
+        border-radius: 4px;
+        outline: none;
+      }
+  
+      .add-description-btn,
+      .edit-item-btn {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s ease-in-out;
+      }
+  
+      .add-description-btn:hover,
+      .edit-item-btn:hover {
+        background-color: #45a049;
+      }
+  
+      .accordion-content {
+        padding: 15px;
+      }
+  
+      .description-input {
+        width: calc(100% - 32px);
+        margin-bottom: 10px;
+        padding: 8px;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        resize: vertical;
+        outline: none;
+      }
+  
+      .submit-btn {
+        margin: 20px auto;
+        display: block;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s ease-in-out;
+      }
+  
+      .submit-btn:hover {
+        background-color: #2980b9;
+      }
+  
+      .display-area {
+        max-width: 90%;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #94fb94eb;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+  
+      .display-area h3 {
+        margin-bottom: 5px;
+        font-size: 20px;
+      }
+  
+      .display-area p {
+        margin-bottom: 15px;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      .add-item-btn {
+        background-color: #ff6b6b;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s ease-in-out;
+        margin-bottom: 20px;
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+      }
+  
+  
+      .add-item-btn:hover {
+        background-color: #ff5252;
+      }
+    
+  </style>
+</head>
+<body>
+  <div class="accordion">
+    <button class="add-item-btn">Add Item</button>
+  </div>
+
+  <button class="submit-btn">Submit</button>
+  <div class="display-area"></div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const accordion = document.querySelector(".accordion");
+      const addItemBtn = accordion.querySelector(".add-item-btn");
+      const submitBtn = document.querySelector(".submit-btn");
+      const displayArea = document.querySelector(".display-area");
+
+      const addItem = () => {
+        const newItem = document.createElement("div");
+        newItem.classList.add("accordion-item");
+        newItem.innerHTML = `
+          <div class="accordion-header">
+            <input type="text" placeholder="Enter Title" class="title-input">
+            <button class="add-description-btn">Add Description</button>
+            <button class="edit-item-btn">Edit</button>
+          </div>
+          <div class="accordion-content">
+            <textarea placeholder="Enter Description" class="description-input"></textarea>
+          </div>
+        `;
+        accordion.insertBefore(newItem, addItemBtn);
+        setupItemEvents(newItem);
+      };
+
+      const addDescription = (content) => {
+        const descriptionInput = document.createElement("textarea");
+        descriptionInput.placeholder = "Enter Description";
+        descriptionInput.classList.add("description-input");
+        descriptionInput.value = content;
+        return descriptionInput;
+      };
+
+      const setupItemEvents = (item) => {
+        const accordionHeader = item.querySelector(".accordion-header");
+        const addDescriptionBtn = item.querySelector(".add-description-btn");
+        const accordionContent = item.querySelector(".accordion-content");
+
+        accordionHeader.addEventListener("click", () => {
+          item.classList.toggle("open");
+          if (item.classList.contains("open")) {
+            accordionContent.style.height = accordionContent.scrollHeight + "px";
+          } else {
+            accordionContent.style.height = "0";
+          }
+        });
+
+        addDescriptionBtn.addEventListener("click", () => {
+          const descriptionInput = addDescription("");
+          accordionContent.appendChild(descriptionInput);
+        });
+
+        const editItemBtn = item.querySelector(".edit-item-btn");
+        editItemBtn.addEventListener("click", () => {
+          const titleInput = item.querySelector('.title-input');
+          const descriptionInput = item.querySelector('.description-input');
+
+          if (titleInput.disabled) {
+            titleInput.disabled = false;
+            descriptionInput.disabled = false;
+            editItemBtn.textContent = 'Save';
+          } else {
+            titleInput.disabled = true;
+            descriptionInput.disabled = true;
+            editItemBtn.textContent = 'Edit';
+          }
+        });
+      };
+
+      addItemBtn.addEventListener("click", addItem);
+
+      submitBtn.addEventListener("click", () => {
+        displayArea.innerHTML = ''; 
+        const items = document.querySelectorAll('.accordion-item');
+        items.forEach(item => {
+          const title = item.querySelector('.title-input').value;
+          const description = item.querySelector('.description-input').value;
+          if (title || description) {
+            const displayItem = document.createElement('div');
+            displayItem.innerHTML = `
+              <h3>${title}</h3>
+              <p>${description}</p>
+              <hr>
+            `;
+            displayArea.appendChild(displayItem);
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
+
